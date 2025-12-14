@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Vídeo</title>
+    
+    <!-- Performance timing script -->
+    <script>!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);</script>
+    
+    <!-- vTurb SmartPlayer preload links -->
+    <link rel="preload" href="https://scripts.converteai.net/04bd306a-440a-4d04-add2-5e1c3e26cf60/players/692866a15b575c46af07fa29/v4/player.js" as="script">
+    <link rel="preload" href="https://scripts.converteai.net/lib/js/smartplayer-wc/v4/smartplayer.js" as="script">
+    <link rel="preload" href="https://cdn.converteai.net/04bd306a-440a-4d04-add2-5e1c3e26cf60/6920ef91b4565a02eb33e0d5/main.m3u8" as="fetch">
+    
+    <!-- DNS prefetch for performance -->
+    <link rel="dns-prefetch" href="https://cdn.converteai.net">
+    <link rel="dns-prefetch" href="https://scripts.converteai.net">
+    <link rel="dns-prefetch" href="https://images.converteai.net">
+    <link rel="dns-prefetch" href="https://api.vturb.com.br">
+    <link rel="dns-prefetch" href="https://cdn.utmify.com.br">
+    
+    <!-- Google Pixel Script -->
+    <script>
+      window.googlePixelId = "693d9aa2735968236fe8ab2c";
+      var a = document.createElement("script");
+      a.setAttribute("async", "");
+      a.setAttribute("defer", "");
+      a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel-google.js");
+      document.head.appendChild(a);
+    </script>
+    
+    <!-- UTMify Script -->
+    <script
+      src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+      data-utmify-prevent-xcod-sck
+      data-utmify-prevent-subids
+      data-utmify-ignore-iframe
+      data-utmify-is-cartpanda
+      async
+      defer
+    ></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        body {
+            background: white;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        main {
+            flex: 1;
+            padding: 1rem;
+            padding-top: 1rem;
+        }
+        
+        .video-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto 2rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        /* Checkout Section Styles */
+        #checkoutSection {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        #checkoutSection.show {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .checkout-title {
+            text-align: center;
+            margin-bottom: 4rem;
+            font-size: 1.875rem;
+            font-weight: bold;
+            background: linear-gradient(to right, #dc2626, #fecaca, #dc2626);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        @media (max-width: 640px) {
+            .checkout-title {
+                font-size: 1.25rem;
+                margin-bottom: 2.5rem;
+            }
+        }
+        
+        .packages-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: 0 1rem 3rem;
+        }
+        
+        @media (min-width: 768px) {
+            .packages-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2.5rem;
+            }
+        }
+        
+        .package-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            background: #f9fafb;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .package-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .package-card.best-value {
+            border: 4px solid #dc2626;
+            background: white;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        @media (min-width: 768px) {
+            .package-card.best-value {
+                transform: scale(1.1);
+            }
+            
+            .package-card.best-value:hover {
+                transform: scale(1.12);
+            }
+        }
+        
+        .best-value-badge {
+            position: absolute;
+            top: -1.25rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #dc2626;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            font-weight: bold;
+            font-size: 1.125rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+        }
+        
+        .package-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .package-header h4 {
+            font-size: 2.25rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #111827;
+        }
+        
+        @media (max-width: 640px) {
+            .package-header h4 {
+                font-size: 1.875rem;
+            }
+        }
+        
+        .package-header p {
+            font-weight: 600;
+            font-size: 1.125rem;
+            color: #4b5563;
+        }
+        
+        .package-image {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .package-image img {
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .price-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .original-price {
+            font-size: 1.5rem;
+            text-decoration: line-through;
+            color: #9ca3af;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .final-price {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #dc2626;
+        }
+        
+        @media (max-width: 640px) {
+            .final-price {
+                font-size: 2.5rem;
+            }
+        }
+        
+        .shipping-info {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        
+        .shipping-free {
+            color: #16a34a;
+        }
+        
+        .shipping-paid {
+            color: #4b5563;
+        }
+        
+        .benefits-list {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .benefits-items {
+            display: inline-block;
+            space-y: 0.75rem;
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .benefit-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.75rem;
+        }
+        
+        .benefit-icon.green {
+            background: #16a34a;
+        }
+        
+        .benefit-icon.red {
+            background: #dc2626;
+        }
+        
+        .benefit-text {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-align: left;
+        }
+        
+        .benefit-text.green {
+            color: #374151;
+        }
+        
+        .benefit-text.red {
+            color: #dc2626;
+        }
+        
+        .buy-button {
+            display: block;
+            width: 100%;
+            background: #dc2626;
+            color: white;
+            font-weight: bold;
+            padding: 1.25rem 1.5rem;
+            border-radius: 1rem;
+            font-size: 1.25rem;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .buy-button:hover {
+            background: #b91c1c;
+            transform: scale(1.05);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .guarantee-text {
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: bold;
+            color: #16a34a;
+        }
+        
+        .total-text {
+            text-align: center;
+            font-size: 0.875rem;
+            color: #374151;
+        }
+        
+        .total-text .line-through {
+            text-decoration: line-through;
+        }
+        
+        .total-text .bold {
+            font-weight: bold;
+            color: #111827;
+        }
+        
+        footer {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 1.5rem 1rem;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            max-width: 56rem;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .disclaimer {
+            text-align: center;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .footer-links a {
+            color: #374151;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer-links a:hover {
+            color: #111827;
+        }
+        
+        .footer-links span {
+            color: #d1d5db;
+        }
+        
+        @media (max-width: 640px) {
+            footer {
+                padding: 1rem;
+            }
+            
+            .footer-links {
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="video-container">
+            <vturb-smartplayer id="vid-692866a15b575c46af07fa29" style="display: block; margin: 0 auto; width: 100%; max-width: 400px;"></vturb-smartplayer>
+        </div>
+
+        <!-- Checkout Section (appears after 32 minutes) -->
+        <div id="checkoutSection">
+            <h2 class="checkout-title">SELECT YOUR DISCOUNT PACKAGE</h2>
+
+            <div class="packages-grid">
+                <!-- Best Value Package - 6 BOTTLES -->
+                <div class="package-card best-value">
+                    <div class="best-value-badge">Best Value!</div>
+
+                    <div class="package-header">
+                        <h4>6 Bottles</h4>
+                        <p>180 Day Supply</p>
+                    </div>
+
+                    <div class="package-image">
+                        <img src="6-CAPS.png" alt="6 Bottles">
+                    </div>
+
+                    <div class="price-section">
+                        <div class="original-price">$588</div>
+                        <div class="final-price">$294</div>
+                    </div>
+
+                    <div class="shipping-info shipping-free">FREE SHIPPING</div>
+
+                    <div class="benefits-list">
+                        <div class="benefits-items">
+                            <div class="benefit-item">
+                                <div class="benefit-icon green">✓</div>
+                                <span class="benefit-text green">YOU SAVE $294</span>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon green">✓</div>
+                                <span class="benefit-text green">50% DISCOUNT</span>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon green">✓</div>
+                                <span class="benefit-text green">3 FREE BOTTLES</span>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon green">✓</div>
+                                <span class="benefit-text green">180 DAY GUARANTEE</span>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon red">✓</div>
+                                <span class="benefit-text red">+SURPRISE 🎁</span>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon red">✓</div>
+                                <span class="benefit-text red">BIG SURPRISE 🎁</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="https://be-naturall-life.mycartpanda.com/checkout/202328895:1?afid=oXLKkVvTV2" class="buy-button">BUY NOW</a>
+
+                    <div class="guarantee-text">90 DAYS GUARANTEE+FREE SHIPPING</div>
+                </div>
+
+                <!-- Good Value Package - 3 BOTTLES -->
+                <div class="package-card">
+                    <div style="background: #4b5563; color: white; text-align: center; padding: 1rem; margin: -2rem -2rem 2rem -2rem; border-radius: 1.5rem 1.5rem 0 0;">
+                        <h3 style="font-size: 1.5rem; font-weight: bold;">Good Value</h3>
+                    </div>
+
+                    <div class="package-header">
+                        <h4>3 BOTTLES</h4>
+                        <p>90 Day Supply</p>
+                    </div>
+
+                    <div class="package-image">
+                        <img src="3-CAPS.png" alt="3 Bottles">
+                    </div>
+
+                    <div class="price-section">
+                        <div class="original-price">$294</div>
+                        <div class="final-price" style="font-size: 2.5rem;">$217</div>
+                    </div>
+
+                    <div class="shipping-info shipping-free">FREE SHIPPING</div>
+
+                    <div class="benefits-list">
+                        <div class="benefits-items">
+                            <div class="benefit-item">
+                                <div class="benefit-icon green">✓</div>
+                                <span class="benefit-text green">YOU SAVE $98!</span>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon green">✓</div>
+                                <span class="benefit-text green">1 FREE BOTTLE</span>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon green">✓</div>
+                                <span class="benefit-text green">30% DISCOUNT</span>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon green">✓</div>
+                                <span class="benefit-text green">90 DAYS GUARANTEE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="https://be-naturall-life.mycartpanda.com/checkout/202328894:1?afid=oXLKkVvTV2" class="buy-button">BUY NOW</a>
+
+                    <div class="total-text">Total: <span class="line-through">$294</span> <span class="bold">$196+FREE SHIPPING</span></div>
+                </div>
+
+                <!-- Basic Package - 2 BOTTLES -->
+                <div class="package-card">
+                    <div style="background: #4b5563; color: white; text-align: center; padding: 1rem; margin: -2rem -2rem 2rem -2rem; border-radius: 1.5rem 1.5rem 0 0;">
+                        <h3 style="font-size: 1.5rem; font-weight: bold;">Basic</h3>
+                    </div>
+
+                    <div class="package-header">
+                        <h4>2 BOTTLES</h4>
+                        <p>60 Day Supply</p>
+                    </div>
+
+                    <div class="package-image">
+                        <img src="1-CAPS.png" alt="2 Bottles">
+                    </div>
+
+                    <div class="price-section">
+                        <div class="original-price">$196</div>
+                        <div class="final-price" style="font-size: 2.5rem;">$89</div>
+                    </div>
+
+                    <div class="shipping-info shipping-paid">+ $9.99 SHIPPING</div>
+
+                    <div class="benefits-list">
+                        <div class="benefits-items">
+                            <div class="benefit-item">
+                                <div class="benefit-icon green">✓</div>
+                                <span class="benefit-text green">YOU SAVE $28!</span>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon green">✓</div>
+                                <span class="benefit-text green">15% DISCOUNT</span>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-icon green">✓</div>
+                                <span class="benefit-text green">60 DAYS GUARANTEE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="https://be-naturall-life.mycartpanda.com/checkout/202328893:1?afid=oXLKkVvTV2" class="buy-button">BUY NOW</a>
+
+                    <div class="total-text">Total: <span class="line-through">$196</span> <span class="bold">$158+0.99 SHIPPING</span></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p class="disclaimer">
+                This site is not part of the YouTube website or YouTube LLC. Furthermore, this site is NOT endorsed by YouTube in any way. YouTube is a trademark of Google LLC.
+            </p>
+
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <span>|</span>
+                <a href="#">Terms of Service</a>
+                <span>|</span>
+                <a href="#">Contact us</a>
+                <span>|</span>
+                <a href="#">Refund Policy</a>
+                <span>|</span>
+                <a href="#">DMCA</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- vTurb SmartPlayer Script -->
+    <script type="text/javascript">
+        var s = document.createElement("script");
+        s.src = "https://scripts.converteai.net/04bd306a-440a-4d04-add2-5e1c3e26cf60/players/692866a15b575c46af07fa29/v4/player.js";
+        s.async = true;
+        document.head.appendChild(s);
+
+        // Show checkout section after 32 minutes (32 * 60 * 1000 milliseconds)
+        setTimeout(function() {
+            var checkoutSection = document.getElementById('checkoutSection');
+            checkoutSection.classList.add('show');
+        }, 32 * 60 * 1000);
+    </script>
+</body>
+</html>
